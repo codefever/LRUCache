@@ -35,12 +35,15 @@ public class LRUCache<K, V> {
       return false;
     }
 
+    // create new node
     node = new Node();
     node.key = key;
     node.value = value;
     if (expire_seconds > 0) {
       node.expired_time = System.currentTimeMillis() + expire_seconds * 1000;
     }
+
+    // add first
     map.put(key, node);
     list.addFirst(node);
 
@@ -58,9 +61,16 @@ public class LRUCache<K, V> {
     if (node == null) {
       return null;
     }
+
+    // expired
     if (node.expired_time < System.currentTimeMillis()) {
       return null;
     }
+
+    // move first
+    node.unlink();
+    list.addFirst(node);
+
     return node.value;
   }
 
